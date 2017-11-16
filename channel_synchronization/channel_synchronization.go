@@ -19,5 +19,5 @@ func main() {
 
 	fmt.Println("Do new things on main...")
 
-	<-done
+	<- done
 }
