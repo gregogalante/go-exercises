@@ -3,7 +3,11 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("Hello world")
+	messages := make(chan string, 2)
 
-	// TODO: Continue from here.
+	messages <- "first"
+	messages <- "second"
+
+	fmt.Println(<- messages)
+	fmt.Println(<- messages)
 }
