@@ -1,11 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"html/template"
 )
+
+// Define a global template variable to cache templates
+var templates = template.Must(template.ParseFiles("templates/edit.html", "templates/view.html"))
 
 // Define Page struct
 type Page struct {
@@ -32,20 +34,12 @@ func loadPage(title string) (*Page, error) {
 	return &Page{Title: title, Body: body}, nil
 }
 
-// Define a function to manage handler general errors
-func handlerErr(w http.ResponseWriter) {
-	fmt.Fprintf(w, "There was an error :(")
-}
-
 // Define a function to manage handler page templates
-func handlerTemplate(w http.ResponseWriter, tmp string, p *Page) {
-	t, err := template.ParseFiles("templates/" + tmp + ".html")
+func handlerTemplate(w http.ResponseWriter, tmpl string, p *Page) {
+	err := templates.ExecuteTemplate(w, tmpl + ".html", p)
 	if err != nil {
-		handlerErr(w)
-		return
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-
-	t.Execute(w, p)
 }
 
 // Define a view handler used to show an article
@@ -53,7 +47,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/view/"):]
 	p, err := loadPage(title)
 	if err != nil {
-		handlerErr(w)
+		http.Redirect(w, r, "/edit/" + title, http.StatusFound)
 		return
 	}
 
@@ -71,9 +65,25 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	handlerTemplate(w, "edit", p)
 }
 
+// Define the save handler used to save an article
+func saveHandler(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[len("/save/"):]
+	body := r.FormValue("body")
+
+	p := &Page{Title: title, Body: []byte(body)}
+	err := p.save()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/view/" + title, http.StatusFound)
+}
+
 // Define main function
 func main() {
 	http.HandleFunc("/view/", viewHandler)
 	http.HandleFunc("/edit/", editHandler)
+	http.HandleFunc("/save/", saveHandler)
 	http.ListenAndServe(":8080", nil)
 }
