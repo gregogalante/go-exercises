@@ -31,7 +31,7 @@ func loadPage(title string) (*Page, error) {
 	return &Page{Title: title, Body: body}, nil
 }
 
-// Define a view handler
+// Define a view handler used to show an article
 func viewHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/view/"):]
 	p, err := loadPage(title)
@@ -44,6 +44,9 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", p.Title, p.Body)
 	}
 }
+
+// Define the edit handler used to edit an article
+// TODO
 
 // Define main function
 func main() {
