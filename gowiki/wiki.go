@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"net/http"
 )
 
 // Define Page struct
@@ -30,17 +31,22 @@ func loadPage(title string) (*Page, error) {
 	return &Page{Title: title, Body: body}, nil
 }
 
-// Define main function
-func main() {
-	title := "How to be Gregorio"
-	// create a page and save it
-	p1 := &Page{Title: title, Body: []byte("It's not possible")}
-	p1.save()
-	// load the page
-	p2, err := loadPage(title)
+// Define a view handler
+func viewHandler(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[len("/view/"):]
+	p, err := loadPage(title)
+
 	if err != nil {
 		fmt.Println(err)
+		fmt.Fprintf(w, "There was an error :(")
 	} else {
-		fmt.Println(p2.Body)
+		fmt.Println("Request for", title)
+		fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", p.Title, p.Body)
 	}
+}
+
+// Define main function
+func main() {
+	http.HandleFunc("/view/", viewHandler)
+	http.ListenAndServe(":8080", nil)
 }
