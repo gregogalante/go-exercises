@@ -1,7 +1,3 @@
-/*
-Complete example of a Wiki server used to manage pages and save them on text fles.
-*/
-
 package main
 
 import (
