@@ -31,6 +31,9 @@ func (list *List) Insert(value interface{}) {
 		// set item as head and last of the list
 		list.head = newItem
 		list.last = newItem
+		// set item as itself prev and next
+		list.head.prev = newItem
+		list.last.next = newItem
 	} else {
 		// update head prev pointer
 		list.head.prev = newItem
