@@ -1,17 +1,17 @@
-# Welcome to Revel
+## Welcome to Revel
 
 A high-productivity web framework for the [Go language](http://www.golang.org/).
 
 
-### Start the web server:
+#### Start the web server:
 
    revel run myapp
 
-### Go to http://localhost:9000/ and you'll see:
+#### Go to http://localhost:9000/ and you'll see:
 
     "It works"
 
-## Code Layout
+### Code Layout
 
 The directory structure of a generated Revel application:
 
@@ -34,7 +34,7 @@ The directory structure of a generated Revel application:
     tests/            Test suites
 
 
-## Help
+### Help
 
 * The [Getting Started with Revel](http://revel.github.io/tutorial/gettingstarted.html).
 * The [Revel guides](http://revel.github.io/manual/index.html).
